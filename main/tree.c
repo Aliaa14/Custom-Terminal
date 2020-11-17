@@ -6,17 +6,19 @@
 #include<stdlib.h> 
 
 void tree(){
-     struct stat st = {0};
+     struct stat status = {0};
      int fileDescriptor;
 
      //create directory Dir0 
-     if (stat("./Dir0", &st) == -1){
+     if (stat("./Dir0", &status) == -1){
           mkdir("./Dir0", 0700);
           }
      
      // changing directory to Dir0
-     chdir("Dir0");
-
+     if (chdir("Dir0") != 0){
+          perror("chdir() directory change to Dir0 failed");
+     }
+     
      // Creating the txt files now as follows inside Dir0 
      fileDescriptor = open("t1.txt", O_CREAT | O_RDWR, S_IRWXU);
 
@@ -40,7 +42,7 @@ void tree(){
           }
      
      // Create directory Dir1
-     if(stat("./Dir1", &st) == -1){
+     if(stat("./Dir1", &status) == -1){
              mkdir("./Dir1", 0700); 
         } 
 }
