@@ -9,7 +9,7 @@ path*: this path command will print the path of the current directory to the ter
 #include <limits.h>
 
 int main() {
-   char cwd[PATH_MAX];
+   char cwd[PATH_MAX];dsd
 
    // Open two files to be merged
    FILE *fp1 = fopen("tree.txt", "r");
