@@ -187,140 +187,304 @@ return 0;
 }
 
 
-// path
+/*--------------------------------------------------------------------------------------------------------*/
+int path()
+{    
+    chdir("./Dir0");
+    char s[100];                            // Memory buffer 
+    printf("Current Working Directory:\n\t%s\n", getcwd(s, 100));         // This prints the current working directory     
+    // So this is essentially how the $ pwd command works in linux ... 
+    
+    FILE * fp;
 
-int path(){
-    char cwd[PATH_MAX];
+    char old_name[] = "t2.txt";              // original file name 
+    char new_name[] = "path-info.txt";       // new file name 
 
-   chdir("Dir0");
-   // Open two files to be merged
-   FILE *fp1 = fopen("tree.txt", "r");
-   FILE *fp2 = fopen("path-info.txt", "r");
-   FILE *fp4 = fopen("t2.txt", "w");
-   // Open file to store the result
-   FILE *fp3 = fopen("t3.txt", "w");
-   char c;
+    fp = fopen(old_name, "w+");
+    fprintf(fp, "This is testing for fprintf ... \n");
+    fprintf(fp, "Current Working Directory:\n\t%s\n", getcwd(s, 100));    // This prints the current working directory into the "t2.txt" file 
+    fclose(fp);                 // Close file 
 
-   // initiates variables to delete files at the end...
-   //int del_tree = remove("tree.txt");
-   int del_path = remove("path-info.txt");
+    printf("\nCurrent Working Directory path added to file t2.txt\n");
 
-//--------------------------------------------------------------------------
-   // original File_name (t2.txt --> path-info.txt)
-   char old_name[] = "t2.txt";
-   // new File_name (t2.txt --> path-info.txt)
-   char new_name[] = "path-info.txt";
-   int value;
+    int value = rename(old_name, new_name);         // rename "t2.txt" to "path-info.txt" [FILE MUST BE CLOSED!] 
 
-   // original File_name (t3.txt --> log.txt)
-   char old_name_2[] = "t3.txt";
-   // new File_name (t3.txt --> log.txt)
-   char new_name_2[] = "log.txt";
-   int value_2;
+    // Standard Exception Handling 
+    if(!value) { 
+        printf("%s", "-- File name changed successfully from t2.txt to pathinfo.txt!\n"); 
+    } else { 
+        perror("\nError File name change unsuccess!\n"); 
+    } 
 
-//--------------------------------------------------------------------------
+/* ---------------------------------[  Thought Process:  ]-------------------------------------
+Open 2 files in read mode, store all of its content and paste into a 3rd file 't3.txt', 
+after closing the file, rename 't3.txt' into 'log.txt' and then delete the first 2 files.
+----------------------------------------------------------------------------------------------- */
 
-   // Prints current directory. Otherwise, generates error.
-   if (getcwd(cwd, sizeof(cwd)) != NULL) {
-       printf("Current working directory is: %s\n\n", cwd);
-       fprintf(fp4, "Current working directory is: %s\n\n", cwd);
-   } else {
-       perror("getcwd() error");
-       return 1;
-   }
+    FILE *fs1, *fs2, *logFile;
 
-//--------------------------------------------------------------------------
-/* Changing the filename of t2.txt to path-info.txt */
+    char ch, file1[100], file2[100], file3[200];
 
-   // File name is changed from t2.txt --> path-info.txt
-   value = rename(old_name, new_name);
+    fs1 = fopen("tree.txt", "r");     // Open file 1 in read mode 
+    fs2 = fopen("path-info.txt", "r");     // Open file 2 in read mode 
 
-   // Prints whether or not the File_name was successfully changed
-   if(!value) {
-       printf("%s", "File name t2.txt to path-info.txt changed successfully. \n\n");
-     } else {
-       perror("Error: t2.txt does not exist within directory...\n");
-     }
+    // Standard Exception Handling for tree.txt, and path.txt
+    if( fs1 == NULL || fs2 == NULL ) {
+		perror("Error ");
+		printf("Press any key to exit...\n");
+		exit(EXIT_FAILURE);
+	}
 
-//--------------------------------------------------------------------------
-/* Merge tree.txt with path-info.txt into t3.txt */
+    logFile = fopen("t3.txt", "w");    // Open log file write mode
+    
+    // Standard Exception Handling for t3.txt
+    if( logFile == NULL ) {
+		perror("Error ");
+		printf("Press any key to exit...\n");
+		exit(EXIT_FAILURE);
+	}
 
-printf("----------FPPPP111111-------------------\n");
-    if(fp1){
-        while ((c = getc(fp1)) != EOF)
-        putchar(c);
-    }
+    while( ( ch = fgetc(fs1) ) != EOF )
+	      fputc(ch,logFile);
+	while( ( ch = fgetc(fs2) ) != EOF )
+	      fputc(ch,logFile);
 
- printf("--------------FP22222222---------------\n");
+    char filename[] = "t3.txt";              // original file name 
+    char new_filename[] = "log.txt";         // new file name 
 
-    if(fp2){
-        while ((c = getc(fp2)) != EOF)
-        putchar(c);
-    }
- printf("------------FPPPP33333-----------------\n");
- if(fp3){
-        while ((c = getc(fp3)) != EOF)
-        putchar(c);
-    }
+    printf("Two files were sucessfully merged into %s file successfully!\n", filename);
 
- printf("------------FPPPP444444-----------------\n");
- if(fp4){
-        while ((c = getc(fp4)) != EOF)
-        putchar(c);
-    }
+    fclose(fs1);            // close file 1 
+	fclose(fs2);            // close file 2 
+    fclose(logFile);        // close logFile 
 
-   if (fp1 == NULL || fp2 == NULL) {
-     puts("Could not open files");
-     exit(0);
-   }
+    int result = rename(filename, new_filename);        // rename "t3.txt" to "log.txt" [FILE MUST BE CLOSED!] 
 
-   // Copy contents of first file to file3.txt
-   while ((c = fgetc(fp1)) != EOF){
-     fputc(c, fp3);
-   }
+    // Standard Exception Handling 
+    if(!result) { 
+        printf("%s", " -- File name changed successfully from t3.txt to log.txt !\n"); 
+    } else { 
+        perror("\nError File name change unsuccess!\n"); 
+    } 
 
-    // Copy contents of second file to file3.txt
-    while ((c = fgetc(fp2)) != EOF){
-      fputc(c, fp3);
-    }
+    printf("\n");       // Just for formatting purposes
 
-    printf("Merged tree.txt and path-info.txt into t3.txt \n\n");
 
-    fclose(fp1);
-    fclose(fp2);
-    fclose(fp3);
+    // Now all that's left is to delete the remaining 2 files! 
 
-//--------------------------------------------------------------------------
-/* Changing the filename of t3.txt to log.txt */
+    remove("tree.txt");     // delete "tree.txt"
+    printf("tree.txt file removed successfully ...\n");
+    remove("path-info.txt");     // delete "path.txt"
+    printf("path-info.txt file removed successfully ...\n");
 
-   // File name is changed from t3.txt --> log.txt
-   value = rename(old_name_2, new_name_2);
+    printf("\nAll tasks done!\n\nProgram Execution Complete!\n");
 
-   // Prints whether or not the File_name was successfully changed
-   if(!value) {
-       printf("%s", "File name t3.txt to log.txt changed successfully. \n\n");
-     } else {
-       perror("Error: t3.txt does not exist within directory...\n");
-     }
+    return 0; 
 
-//--------------------------------------------------------------------------
-/* Deletes tree.txt and path-info.txt */
+} 
 
-    // Deletes tree.txt
-    // if (!del_tree)
-    //    printf("tree.txt has been deleted successfully! \n\n");
-    // else
-    //    printf("tree.txt was NOT deleted successfully \n");
 
-    // Deletes path-info.txt
-    if (!del_path)
-       printf("path-info.txt has been deleted successfully! \n\n");
-    else
-       printf("path-info.txt was NOT deleted successfully \n");
 
-    return 0;   
+/*---------------------------------------------------------------------*/
+
+// int path(){
+//     char cwd[PATH_MAX];
+
+//    chdir("Dir0");
+//    // Open two files to be merged
+//    FILE *fp1 = fopen("tree.txt", "r");
+//    FILE *fp2 = fopen("path-info.txt", "r");
+//    FILE *fp4 = fopen("t2.txt", "w");
+//    // Open file to store the result
+//    FILE *fp3 = fopen("t3.txt", "w");
+//    char c;
+
+//    // initiates variables to delete files at the end...
+//    //int del_tree = remove("tree.txt");
+//    int del_path = remove("path-info.txt");
+
+// //--------------------------------------------------------------------------
+//    // original File_name (t2.txt --> path-info.txt)
+//    char old_name[] = "t2.txt";
+//    // new File_name (t2.txt --> path-info.txt)
+//    char new_name[] = "path-info.txt";
+//    int value;
+
+//    // original File_name (t3.txt --> log.txt)
+//    char old_name_2[] = "t3.txt";
+//    // new File_name (t3.txt --> log.txt)
+//    char new_name_2[] = "log.txt";
+//    int value_2;
+
+// //--------------------------------------------------------------------------
+
+//    // Prints current directory. Otherwise, generates error.
+//    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+//        printf("Current working directory is: %s\n\n", cwd);
+//        fprintf(fp4, "Current working directory is: %s\n\n", cwd);
+//    } else {
+//        perror("getcwd() error");
+//        return 1;
+//    }
+
+// //--------------------------------------------------------------------------
+// /* Changing the filename of t2.txt to path-info.txt */
+
+//    // File name is changed from t2.txt --> path-info.txt
+//    value = rename(old_name, new_name);
+
+//    // Prints whether or not the File_name was successfully changed
+//    if(!value) {
+//        printf("%s", "File name t2.txt to path-info.txt changed successfully. \n\n");
+//      } else {
+//        perror("Error: t2.txt does not exist within directory...\n");
+//      }
+
+// //--------------------------------------------------------------------------
+// /* Merge tree.txt with path-info.txt into t3.txt */
+
+// printf("----------FPPPP111111-------------------\n");
+//     if(fp1){
+//         while ((c = getc(fp1)) != EOF)
+//         putchar(c);
+//     }
+
+//  printf("--------------FP22222222---------------\n");
+
+//     if(fp2){
+//         while ((c = getc(fp2)) != EOF)
+//         putchar(c);
+//     }
+//  printf("------------FPPPP33333-----------------\n");
+//  if(fp3){
+//         while ((c = getc(fp3)) != EOF)
+//         putchar(c);
+//     }
+
+//  printf("------------FPPPP444444-----------------\n");
+//  if(fp4){
+//         while ((c = getc(fp4)) != EOF)
+//         putchar(c);
+//     }
+
+//    if (fp2 == NULL) {
+//      puts("Could not open files");
+//      exit(0);
+//    }
+
+//    // Copy contents of first file to file3.txt
+//    while ((c = fgetc(fp1)) != EOF){
+//      fputc(c, fp3);
+//    }
+
+//     // Copy contents of second file to file3.txt
+//     while ((c = fgetc(fp2)) != EOF){
+//       fputc(c, fp3);
+//     }
+
+//     printf("Merged tree.txt and path-info.txt into t3.txt \n\n");
+
+//     fclose(fp1);
+//     fclose(fp2);
+//     fclose(fp3);
+
+// //--------------------------------------------------------------------------
+// /* Changing the filename of t3.txt to log.txt */
+
+//    // File name is changed from t3.txt --> log.txt
+//    value = rename(old_name_2, new_name_2);
+
+//    // Prints whether or not the File_name was successfully changed
+//    if(!value) {
+//        printf("%s", "File name t3.txt to log.txt changed successfully. \n\n");
+//      } else {
+//        perror("Error: t3.txt does not exist within directory...\n");
+//      }
+
+// //--------------------------------------------------------------------------
+// /* Deletes tree.txt and path-info.txt */
+
+//     // Deletes tree.txt
+//     // if (!del_tree)
+//     //    printf("tree.txt has been deleted successfully! \n\n");
+//     // else
+//     //    printf("tree.txt was NOT deleted successfully \n");
+
+//     // Deletes path-info.txt
+//     if (!del_path)
+//        printf("path-info.txt has been deleted successfully! \n\n");
+//     else
+//        printf("path-info.txt was NOT deleted successfully \n");
+
+//     return 0;   
+// }
+
+
+/*---------------------Declare variables for exit* command---------------------*/
+#define COUNT_HISTORY 4
+char store_history[COUNT_HISTORY][20];
+int current_history = 0;
+
+
+/*---------------------Function to store history---------------------*/
+void append_to_history(char store_history[COUNT_HISTORY][20], char *command, int *count)
+{
+	if(*count < COUNT_HISTORY)
+	{
+		strcpy(store_history[*count],command);
+		(*count)++;
+	}
+	else
+	{
+		for(int i=0;i<COUNT_HISTORY-1;i++){
+            strcpy(store_history[*count],store_history[*count+1]);
+        }
+		strcpy(store_history[COUNT_HISTORY-1],command);
+	}
 }
 
+/*---------------------Function to display history---------------------*/
+void display_history(char store_history[COUNT_HISTORY][20], int count)
+{
+	if(count == 0)
+		printf("\nERROR: *NO HISTORY TO DISPLAY*\n");
+	else
+	{
+		printf("\n---HISTORY---\n\n");
+		for(int i=0;i<count;i++)
+        {
+            printf("%d   %s\n",i, store_history[i]);
+        }
+			
+	}
+}
+
+
+/*---------------------Function to print contents of the current directory---------------------*/
+void print_contents_of_current_dir()
+{
+    printf("---------Contents of the current directory----------\n");
+    execlp("ls","ls", "-l", NULL);
+}
+
+
+// bool exit_terminal()
+// {
+//     printf("\n Press the 'RETURN' key to exit the terminal\n");
+//     char input;
+//     input = fget(stdin);
+//     if(input == "\n")
+//     {
+//         printf("Exiting...\n");
+//     }
+
+//     return false;
+
+// }
+
+
+
+/*-------------------------------------------------------------------------------*/
 
 //---------------- main
 int main(){
@@ -334,18 +498,36 @@ int main(){
         
         if(strcmp(userInput,"tree*") == 0){
             tree();
+			append_to_history(store_history,userInput,&current_history);
         
         } else if(strcmp(userInput,"list*") == 0){
             list();  
+			append_to_history(store_history,userInput,&current_history);
         
         } else if(strcmp(userInput,"path*") == 0){
             path();
-        
-        //} else if(strcmp(userInput,"exit*") == 0){
-        //     flag= false;
-        
-        // } else{
-            //printf("WRONG INPUT!!! \nPlease enter one of the following command (tree*, list*, path*, exit*)\n");
+			append_to_history(store_history,userInput,&current_history);
+
+        } else if(strcmp(userInput,"exit*") == 0){
+			append_to_history(store_history,userInput,&current_history);
+			display_history(store_history,current_history);
+			
+			// change the current working directory to the main folder 
+			char s[100]; 
+			// printf("%s\n", getcwd(s, 100)); 
+			chdir("..");
+            print_contents_of_current_dir();
+			// exit_terminal();
+			// while(1)
+			// 	scanf("%s",userInput);
+            // flag= false;
+        } 
+		else if(strcmp(userInput,"\n") == 0){
+			flag = false;
+			break;
+		}
+		else{
+            printf("WRONG INPUT!!! \nPlease enter one of the following command (tree*, list*, path*, exit*)\n");
         }
     }  
 
