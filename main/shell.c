@@ -481,9 +481,6 @@ void print_contents_of_current_dir()
 //     return false;
 
 // }
-
-
-
 /*-------------------------------------------------------------------------------*/
 
 //---------------- main
@@ -516,15 +513,37 @@ int main(){
 			char s[100]; 
 			// printf("%s\n", getcwd(s, 100)); 
 			chdir("..");
-            print_contents_of_current_dir();
-			// exit_terminal();
-			// while(1)
-			// 	scanf("%s",userInput);
-            // flag= false;
-        } else if(strcmp(userInput,"\n") == 0){
-			flag = false;
-			break;
-		}
+			
+			int PID = fork();
+			if(PID < 0)
+			{
+				printf("Error : Failed to create a child process\n");
+				return -1;
+			}
+
+			else if (PID == 0)
+			{
+				print_contents_of_current_dir();   
+			}
+
+			else
+			{
+				wait(NULL);
+				printf("\n\nPress 'Return' to exit the terminal\n"); 
+				while(1){
+					char c = getchar();
+					if (strcmp(&c,"\n") == 0)
+						break;
+						flag = false;
+				}
+				
+			}
+
+        } 
+		// else if(strcmp(userInput,"\n") == 0){
+		// 	flag = false;
+		// 	break;
+		// }
 		else{
             printf("WRONG INPUT!!! \nPlease enter one of the following command (tree*, list*, path*, exit*)\n");
         }
