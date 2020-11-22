@@ -490,7 +490,7 @@ int main(){
 
 //tree list path exit
     while(flag){
-        printf("Shell User$>>> ");
+        printf("Terminal > ");
         scanf("%s",userInput);
         
         if(strcmp(userInput,"tree*") == 0){

@@ -1,0 +1,9 @@
+total 16K
+drwxr-xr-x 3 ahsan ahsan 4.0K Nov 21 19:41 .
+drwxr-xr-x 3 ahsan ahsan 4.0K Nov 21 19:40 ..
+drwxr-xr-x 2 ahsan ahsan 4.0K Nov 21 19:39 Dir1
+-rwx------ 1 ahsan ahsan  445 Nov 21 19:39 log.txt
+-rwx------ 1 ahsan ahsan    0 Nov 21 19:41 t1.txt
+This is testing for fprintf ... 
+Current Working Directory:
+	/home/ahsan/Semesters/6. Fall_2020/CSC332_OperatingSystems/Custom-Terminal/main/Dir0
