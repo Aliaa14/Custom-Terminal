@@ -521,8 +521,7 @@ int main(){
 			// while(1)
 			// 	scanf("%s",userInput);
             // flag= false;
-        } 
-		else if(strcmp(userInput,"\n") == 0){
+        } else if(strcmp(userInput,"\n") == 0){
 			flag = false;
 			break;
 		}
