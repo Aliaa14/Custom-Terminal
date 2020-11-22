@@ -285,13 +285,21 @@ int main(){
 			
 			} else{
 				wait(NULL);
+                bool flag_2 = true;
 				printf("\n\nPress 'Return' to exit the terminal\n"); 
-				while(1){
+				while(flag_2){
 					char c = getchar();
 					if (strcmp(&c,"\n") == 0 || strcmp(&c,"\r") == 0)
-						break;
-						flag = false;
+                    {
+                        printf("here1\n");
+                        flag_2 = false;
+                        printf("here2\n");
+                    }
+                    printf("here2.5\n");
+                    flag = false;
+                    printf("here3\n");
 				}
+                printf("here4\n");
 			}
         
 		} else{
