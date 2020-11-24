@@ -286,12 +286,16 @@ int main(){
 			} else{
 				wait(NULL);
 				printf("\n\nPress 'Return' to exit the terminal\n"); 
+				char c = getchar();
 				while(1){
 					char c = getchar();
-					if (strcmp(&c,"\n") == 0)
+					if (c == '\n')
+					{
+						printf("Exiting...\n");
 						break;
-						flag = false;
+					}
 				}
+				flag = false;
 			}
         
 		} else{

@@ -1,0 +1,7 @@
+total 0
+drwxr-xr-x  4 aliaaabdelrahman24  staff   128B Nov 23 23:15 .
+drwxr-xr-x  9 aliaaabdelrahman24  staff   288B Nov 23 23:15 ..
+drwxr-xr-x  2 aliaaabdelrahman24  staff    64B Nov 23 21:36 Dir1
+-rwx------  1 aliaaabdelrahman24  staff     0B Nov 23 23:15 t1.txt
+ >> Current Working Directory:
+	/Users/aliaaabdelrahman24/Desktop/CSC332/Lecture/Group_project/Custom-Terminal/main/Dir0
